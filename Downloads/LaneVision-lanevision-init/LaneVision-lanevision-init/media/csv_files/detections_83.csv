@@ -1,0 +1,5 @@
+frame_number,vehicle_id,speed,is_overspeed,x1,y1,x2,y2,confidence,vehicle_class,timestamp
+7,1,106.7,True,317,93,386,195,0.99,truck,0.28
+39,6,51.4,False,241,122,286,165,0.99,car,1.56
+48,7,30.0,False,438,125,455,142,0.99,motorcycle,1.92
+79,9,51.4,False,309,119,358,166,0.99,car,3.16

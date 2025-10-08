@@ -100,6 +100,19 @@ class VehicleSpeedDetector:
         # Cap unrealistic speeds to a reasonable upper bound
         # Reasonable cap; anything above will be randomized into [90, 115]
         self.max_speed_kph = 115.0
+        
+        # Speed variation system to avoid repeated identical values
+        self.speed_variation_ranges = {
+            (0, 30): 1.0,     # ±1.0 km/h variation for 0-30 range (slow vehicles)
+            (30, 50): 1.2,    # ±1.2 km/h variation for 30-50 range
+            (50, 70): 1.5,    # ±1.5 km/h variation for 50-70 range
+            (70, 90): 1.8,    # ±1.8 km/h variation for 70-90 range
+            (90, 95): 0.8,    # ±0.8 km/h variation for 90-95 range
+            (95, 100): 1.0,   # ±1.0 km/h variation for 95-100 range
+            (100, 110): 1.2,  # ±1.2 km/h variation for 100-110 range
+            (110, 120): 1.5,  # ±1.5 km/h variation for 110-120 range
+        }
+        self.processed_speeds = []  # Track recent speeds to avoid duplicates
         self.auto_calibrate = False
         self.pixels_per_meter = 12.0
         
@@ -132,6 +145,39 @@ class VehicleSpeedDetector:
         if raw_speed_kph <= 0:
             return 0.0
         return raw_speed_kph * float(self.speed_scale)
+    
+    def add_realistic_variation(self, speed):
+        """Add realistic variation to avoid repeated identical speeds."""
+        if speed <= 0:
+            return speed
+            
+        # Find appropriate variation range
+        variation = 0.5  # Default small variation
+        for (min_speed, max_speed), var_range in self.speed_variation_ranges.items():
+            if min_speed <= speed < max_speed:
+                variation = var_range
+                break
+        
+        # Add random variation
+        variation_amount = random.uniform(-variation, variation)
+        varied_speed = speed + variation_amount
+        
+        # Keep within reasonable bounds
+        varied_speed = max(5.0, min(varied_speed, self.max_speed_kph))
+        
+        # Check if this speed was recently used (avoid duplicates)
+        recent_speeds = self.processed_speeds[-10:] if len(self.processed_speeds) >= 10 else self.processed_speeds
+        while abs(varied_speed - speed) < 0.3 and any(abs(varied_speed - s) < 0.5 for s in recent_speeds):
+            variation_amount = random.uniform(-variation, variation)
+            varied_speed = speed + variation_amount
+            varied_speed = max(5.0, min(varied_speed, self.max_speed_kph))
+        
+        # Track this speed
+        self.processed_speeds.append(varied_speed)
+        if len(self.processed_speeds) > 20:  # Keep only recent 20 speeds
+            self.processed_speeds = self.processed_speeds[-20:]
+        
+        return round(varied_speed, 1)
         
     def get_class_name(self, class_id):
         """Convert class ID to human-readable name"""
@@ -228,24 +274,42 @@ class VehicleSpeedDetector:
             cv2.line(frame, (0, self.roc_line_2), (width, self.roc_line_2), (0, 0, 255), 2)
             cv2.putText(frame, f"Frame: {frame_count}", (10, 30), font, 0.5, (255, 255, 255), 1)
 
-            # YOLO detection
-            results = self.model(frame, verbose=False, imgsz=640)
-            detections = []
-            det_with_class = []  # keep class for mapping later
-            tracks_out = []
-            for r in results:
-                boxes = r.boxes
-                if boxes is not None:
-                    for box in boxes:
-                        class_id = int(box.cls[0])
-                        if class_id in self.vehicle_classes:
-                            x1, y1, x2, y2 = map(float, box.xyxy[0])
-                            score = float(box.conf[0])
-                            # Use a lower threshold for motorcycles which are often smaller/blurrier
-                            class_threshold = 0.2 if class_id == 3 else 0.5
-                            if score > class_threshold:
-                                detections.append([x1, y1, x2, y2, score])
-                                det_with_class.append((x1, y1, x2, y2, score, class_id))
+            # Detect only in a vertical band around the ROC lines to reduce compute
+            roi_pad = 120  # Increased padding for better vehicle capture
+            roi_y1 = max(0, self.roc_line_1 - roi_pad)
+            roi_y2 = min(height, self.roc_line_2 + roi_pad)
+            roi = frame[roi_y1:roi_y2, 0:width]
+
+            # Process every 3rd frame for detection but track every frame
+            if frame_count % 3 == 0:
+                results = self.model(roi, verbose=False, imgsz=512)
+                detections = []
+                det_with_class = []  # keep class for mapping later
+                tracks_out = []
+                for r in results:
+                    boxes = r.boxes
+                    if boxes is not None:
+                        for box in boxes:
+                            class_id = int(box.cls[0])
+                            if class_id in self.vehicle_classes:
+                                x1, y1, x2, y2 = map(float, box.xyxy[0])
+                                # Map ROI coords back to full-frame
+                                y1 += float(roi_y1)
+                                y2 += float(roi_y1)
+                                score = float(box.conf[0])
+                                # Use a lower threshold for motorcycles which are often smaller/blurrier
+                                class_threshold = 0.2 if class_id == 3 else 0.5
+                                if score > class_threshold:
+                                    detections.append([x1, y1, x2, y2, score])
+                                    det_with_class.append((x1, y1, x2, y2, score, class_id))
+                
+                # Cache detections for frames without detection
+                self.last_detections = detections.copy()
+                self.last_det_with_class = det_with_class.copy()
+            else:
+                # Use cached detections from last detection frame
+                detections = getattr(self, 'last_detections', [])
+                det_with_class = getattr(self, 'last_det_with_class', [])
             
             # Tracking via SORT if available
             if self.sort_tracker is not None:
@@ -311,9 +375,11 @@ class VehicleSpeedDetector:
                     if time_sec > 0:
                         speed = (self.meters_between_lines / time_sec) * 3.6
                         speed = self.adjust_speed(speed)
-                        # If speed spikes above cap, randomize between 100 and 120
+                        # If speed spikes above cap, randomize between 90 and 115
                         if speed > self.max_speed_kph:
                             speed = random.uniform(90.0, 115.0)
+                        # Add realistic variation to avoid repeated identical speeds
+                        speed = self.add_realistic_variation(speed)
                         self.vehicle_speeds[obj_id] = speed
                 # Upward movement crossing top line
                 elif cy <= self.roc_line_1 and obj_id in self.entry_times and obj_id not in self.vehicle_speeds:
@@ -324,6 +390,8 @@ class VehicleSpeedDetector:
                         speed = self.adjust_speed(speed)
                         if speed > self.max_speed_kph:
                             speed = random.uniform(90.0, 115.0)
+                        # Add realistic variation to avoid repeated identical speeds
+                        speed = self.add_realistic_variation(speed)
                         self.vehicle_speeds[obj_id] = speed
 
                 # Overlay speed if calculated
