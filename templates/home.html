@@ -1,0 +1,510 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - LaneVision{% endblock %}
+
+{% block content %}
+<!-- Futuristic Hero Section with 3D Elements -->
+<div class="hero-3d py-4 position-relative overflow-hidden">
+    <div class="hero-3d-bg position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="hero-3d-grid position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="hero-particles position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative z-index-2 py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content mb-5 mb-lg-0">
+                <div class="hero-badge-3d mb-4 d-inline-block">
+                    <span class="badge-3d-text">NEXT-GEN TRAFFIC AI</span>
+                </div>
+                <h1 class="display-3 fw-bold text-gradient-3d mb-4">Revolutionary <span class="text-highlight1">Vehicle Detection</span> Technology</h1>
+                <p class="lead fs-4 mb-5 text-light-emphasis">Harness the power of advanced AI to transform traffic monitoring with unparalleled speed detection and license plate recognition.</p>
+                
+                {% if not user.is_authenticated %}
+                <div class="d-flex flex-column flex-sm-row gap-4 mb-5">
+                    <a href="{% url 'signup' %}" class="btn btn-glow btn-lg px-5 py-3">
+                        <span class="btn-text">Start Your Journey</span>
+                        <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg border-glow px-4">
+                        <i class="fas fa-user-circle me-2"></i> Access Dashboard
+                    </a>
+                </div>
+                <div class="trust-indicators d-flex flex-wrap gap-4 mb-4">
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <span>Enterprise-grade security</span>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <span>Real-time processing</span>
+                    </div>
+                    <div class="trust-item">
+                        <div class="trust-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <span>Open API access</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="d-flex flex-column flex-sm-row gap-4 mb-5">
+                    <a href="{% url 'upload_video' %}" class="btn btn-glow btn-lg px-5 py-3">
+                        <span class="btn-text">Upload New Footage</span>
+                        <span class="btn-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-light btn-lg border-glow px-4">
+                        <i class="fas fa-chart-network me-2"></i> Command Center
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-visual position-relative">
+                    <div class="floating-elements position-absolute w-100 h-100"></div>
+                    <div class="hero-card position-relative">
+                        <div class="hero-card-inner">
+                            <div class="detection-screen">
+                                <img src="https://imagevision.ai/wp-content/uploads/2024/01/Overspeeding-Detection-Section-01.jpg" alt="AI Detection" class="img-fluid rounded-lg">
+                                <div class="detection-overlay">
+                                    <div class="detection-box"></div>
+                                    <div class="detection-box"></div>
+                                    <div class="detection-data">
+                                        <div class="detection-speed">78 km/h</div>
+                                        <div class="detection-plate">XYZ-1234</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tech-indicators">
+                                <div class="tech-indicator">
+                                    <div class="indicator-dot pulse"></div>
+                                    <span>LIVE</span>
+                                </div>
+                                <div class="tech-indicator">
+                                    <div class="indicator-bar">
+                                        <div class="indicator-progress" style="width: 85%"></div>
+                                    </div>
+                                    <span>AI CONFIDENCE</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-bottom-curve position-absolute bottom-0 start-0 w-100"></div>
+</div>
+
+<!-- Interactive Stats Section -->
+<div class="stats-3d py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="stats-container position-relative">
+                    <div class="stats-bg"></div>
+                    <div class="row g-0 stats-row">
+                        <div class="col-6 col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">
+                                    <span class="counter">99.8</span>%
+                                </div>
+                                <div class="stat-label">Detection Accuracy</div>
+                                <div class="stat-graph">
+                                    <div class="graph-bar" style="height: 98%"></div>
+                                    <div class="graph-bar" style="height: 95%"></div>
+                                    <div class="graph-bar" style="height: 99%"></div>
+                                    <div class="graph-bar" style="height: 97%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">
+                                    <span class="counter">30</span>+
+                                </div>
+                                <div class="stat-label">FPS Processing</div>
+                                <div class="stat-graph">
+                                    <div class="graph-bar" style="height: 80%"></div>
+                                    <div class="graph-bar" style="height: 90%"></div>
+                                    <div class="graph-bar" style="height: 85%"></div>
+                                    <div class="graph-bar" style="height: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">
+                                    <span class="counter">5</span>k+
+                                </div>
+                                <div class="stat-label">Videos Processed</div>
+                                <div class="stat-graph">
+                                    <div class="graph-bar" style="height: 60%"></div>
+                                    <div class="graph-bar" style="height: 75%"></div>
+                                    <div class="graph-bar" style="height: 85%"></div>
+                                    <div class="graph-bar" style="height: 95%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="stat-item">
+                                <div class="stat-value">
+                                    <span class="counter">24</span>/7
+                                </div>
+                                <div class="stat-label">Monitoring</div>
+                                <div class="stat-graph">
+                                    <div class="graph-bar" style="height: 100%"></div>
+                                    <div class="graph-bar" style="height: 100%"></div>
+                                    <div class="graph-bar" style="height: 100%"></div>
+                                    <div class="graph-bar" style="height: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Core Technology Section -->
+<div class="tech-section py-6 position-relative">
+    <div class="tech-bg position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative z-index-1">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="section-badge">
+                    <span>CORE TECHNOLOGY</span>
+                </div>
+                <h2 class="section-title">Powered by Advanced AI</h2>
+                <p class="section-subtitle">Our system leverages cutting-edge machine learning algorithms</p>
+            </div>
+        </div>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="tech-title" style="color: aliceblue;">Neural Networks</h3>
+                        <p class="tech-desc">Deep learning models trained on millions of vehicle images for precise detection and classification.</p>
+                        <div class="tech-progress">
+                            <div class="progress-bar" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 class="tech-title" style="color: aliceblue;">Computer Vision</h3>
+                        <p class="tech-desc">Advanced image processing algorithms that work in various lighting and weather conditions.<br><br></p>
+                        <div class="tech-progress">
+                            <div class="progress-bar" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="tech-card">
+                    <div class="tech-card-inner">
+                        <div class="tech-icon">
+                            <i class="fas fa-microchip"></i>
+                        </div>
+                        <h3 class="tech-title" style="color: aliceblue;">Edge Computing</h3>
+                        <p class="tech-desc">Process video streams locally with minimal latency for real-time detection capabilities.<br><br></p>
+                        <div class="tech-progress">
+                            <div class="progress-bar" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="tech-visual">
+                    <div class="tech-visual-inner">
+                        <div class="tech-visual-screen">
+                            <div class="tech-visual-content">
+                                <div class="tech-code-snippet">
+                                    <div class="code-line"><span class="code-keyword">import</span> cv2, numpy</div>
+                                    <div class="code-line"><span class="code-keyword">from</span> models <span class="code-keyword">import</span> YOLO</div>
+                                    <div class="code-line"></div>
+                                    <div class="code-line"><span class="code-comment"># Initialize detector</span></div>
+                                    <div class="code-line">model = YOLO(<span class="code-string">"vehicle_detector.pt"</span>)</div>
+                                    <div class="code-line"></div>
+                                    <div class="code-line"><span class="code-keyword">def</span> <span class="code-function">process_frame</span>(frame):</div>
+                                    <div class="code-line">    results = model(frame)</div>
+                                    <div class="code-line">    <span class="code-keyword">return</span> results</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tech-visual-elements">
+                            <div class="element element-1"></div>
+                            <div class="element element-2"></div>
+                            <div class="element element-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="tech-features">
+                    <div class="tech-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4 style="color: aliceblue;">Precision Speed Calculation</h4>
+                            <p>Multi-point tracking algorithm calculates vehicle speed with 99.8% accuracy regardless of camera angle.</p>
+                        </div>
+                    </div>
+                    <div class="tech-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4 style="color: aliceblue;">Advanced OCR Technology</h4>
+                            <p>Specialized neural network trained on global license plate formats for accurate recognition in challenging conditions.</p>
+                        </div>
+                    </div>
+                    <div class="tech-feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h4 style="color: aliceblue;">Real-time Analytics</h4>
+                            <p>Process and visualize traffic data instantly with customizable dashboards and automated reporting.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Use Cases Section -->
+<div class="use-cases-section py-6">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="section-badge">
+                    <span>APPLICATIONS</span>
+                </div>
+                <h2 class="section-titl" style="color: #0D1929;">Real-World Impact</h2>
+                <p class="section-subtitle" style="color: gray;">How our technology is transforming traffic management</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="use-case-card">
+                    <div class="use-case-image">
+                        <img src="https://images.unsplash.com/photo-1573521193826-58c7dc2e13e3" alt="Smart City" class="img-fluid">
+                        <div class="use-case-overlay"></div>
+                    </div>
+                    <div class="use-case-content">
+                        <h4>Smart Cities</h4>
+                        <p>Integrate with urban infrastructure to optimize traffic flow and enhance public safety.</p>
+                        <a href="#" class="use-case-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="use-case-card">
+                    <div class="use-case-image">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3" alt="Law Enforcement" class="img-fluid">
+                        <div class="use-case-overlay"></div>
+                    </div>
+                    <div class="use-case-content">
+                        <h4>Law Enforcement</h4>
+                        <p>Automate traffic violation detection and provide evidence-grade documentation.</p>
+                        <a href="#" class="use-case-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="use-case-card">
+                    <div class="use-case-image">
+                        <img src="https://images.unsplash.com/photo-1454117096348-e4abbeba002c" alt="Highway Management" class="img-fluid">
+                        <div class="use-case-overlay"></div>
+                    </div>
+                    <div class="use-case-content">
+                        <h4>Highway Management</h4>
+                        <p>Monitor traffic patterns and identify congestion points for improved road planning.</p>
+                        <a href="#" class="use-case-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="testimonials-section py-6 position-relative">
+    <div class="testimonials-bg position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative z-index-1">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="section-badge">
+                    <span>SUCCESS STORIES</span>
+                </div>
+                <h2 class="section-title">Trusted by Professionals</h2>
+                <p class="section-subtitle">What our clients say about our technology</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="testimonials-carousel">
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-text">This system has revolutionized how we monitor traffic in our city. The accuracy of speed detection and license plate recognition is remarkable, even in challenging weather conditions.</p>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John Davis" class="img-fluid rounded-circle">
+                                </div>
+                                <div class="author-info">
+                                    <h5 style="color: aliceblue;">John Davis</h5>
+                                    <p style="color: gray;">Traffic Management Director, Metro City</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <p class="testimonial-text">The implementation was seamless, and the results were immediate. We've seen a 40% reduction in speeding incidents since deploying this technology on our highways.</p>
+                            <div class="testimonial-author">
+                                <div class="author-image">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="img-fluid rounded-circle">
+                                </div>
+                                <div class="author-info">
+                                    <h5 style="color: aliceblue;">Sarah Johnson</h5>
+                                    <p style="color: gray;">Highway Safety Coordinator</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq-section py-6">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <div class="section-badge">
+                    <span>QUESTIONS</span>
+                </div>
+                <h2 class="section-title1" style="color: #0D1929;">Frequently Asked Questions</h2>
+                <p class="section-subtitle" style="color: gray;">Everything you need to know about our technology</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="accordion faq-accordion" id="faqAccordion">
+                    <div class="accordion-item faq-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How accurate is the speed detection?
+                            </button>
+                        </h3>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Our system achieves 99.8% accuracy in speed detection through multi-point tracking and advanced calibration techniques. The technology works effectively in various lighting conditions and camera angles.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item faq-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What video formats are supported?
+                            </button>
+                        </h3>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Our platform supports all major video formats including MP4, AVI, MOV, and MPEG. We recommend uploading videos with at least 720p resolution for optimal detection results.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item faq-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Can the system work with existing CCTV infrastructure?
+                            </button>
+                        </h3>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes, our system is designed to integrate seamlessly with existing CCTV cameras and video management systems. We provide API access and integration support for various camera models and video streams.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item faq-item">
+                        <h3 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                How is the data stored and secured?
+                            </button>
+                        </h3>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                All data is encrypted both in transit and at rest using industry-standard encryption protocols. We offer both cloud-based and on-premises deployment options to meet various security requirements and compliance needs.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div class="cta-section py-6 position-relative">
+    <div class="cta-bg position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative z-index-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="cta-card">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8 mb-4 mb-lg-0">
+                            <h2 class="cta-title">Ready to transform your traffic monitoring?</h2>
+                            <p class="cta-text">Join thousands of professionals using our AI-powered platform for safer roads and smarter cities.</p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            {% if not user.is_authenticated %}
+                            <a href="{% url 'signup' %}" class="btn btn-glow btn-lg px-5 py-3">
+                                <span class="btn-text">Get Started Now</span>
+                                <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'upload_video' %}" class="btn btn-glow btn-lg px-5 py-3">
+                                <span class="btn-text">Upload New Video</span>
+                                <span class="btn-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

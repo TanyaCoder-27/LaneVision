@@ -1,0 +1,601 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ video.title }} - Video Details{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <h1 class="mb-3 mb-md-0"><i class="fas fa-film me-2 text-primary"></i>{{ video.title }}</h1>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-4 mb-lg-0">
+        {% if video.processed_video %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="fas fa-video me-2 text-primary"></i>Processed Video</h5>
+            </div>
+            <div class="card-body p-4">
+                <!-- Video information card -->
+                <div class="mb-4 p-4 bg-light rounded border">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-video text-primary me-3 fa-2x"></i>
+                        <div>
+                            <h5 class="mb-1">Processed Video Available</h5>
+                            <p class="mb-0 text-muted">The video has been processed successfully and is ready for download.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- File information -->
+                    <div class="mb-3 small text-muted">
+                        <p class="mb-1"><strong>File:</strong> {{ video.processed_video.name }}</p>
+                        {% if video.processed_video.size %}
+                            <p class="mb-0"><strong>Size:</strong> {{ video.processed_video.size|filesizeformat }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Video info with improved styling -->
+                <div class="mb-3 p-3 bg-light rounded">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-info-circle text-primary me-2"></i>
+                        <small class="text-muted">
+                            <strong>File:</strong> {{ video.processed_video.name }}
+                            {% if video.processed_video.size %}
+                                | <strong>Size:</strong> {{ video.processed_video.size|filesizeformat }}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="d-grid d-md-flex gap-2 justify-content-md-start">
+                    <a href="{{ video.processed_video.url }}" class="btn btn-outline-primary"  download>
+                        <i class="fas fa-download me-2"></i>Download Video
+                    </a>
+                    {% if video.csv_file %}
+                        <a href="{% url 'download_csv' video.id %}" class="btn btn-success">
+                            <i class="fas fa-file-csv me-2"></i><span class="d-none d-sm-inline">Download </span>CSV Report
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Download instructions -->
+        <div class="alert alert-info d-flex align-items-start">
+            <div class="me-3">
+                <i class="fas fa-info-circle fa-2x"></i>
+            </div>
+            <div>
+                <h5 class="alert-heading">Download Instructions</h5>
+                <p class="mb-0">Click the download button to save the processed video to your device. You can then play it using your preferred video player.</p>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="alert alert-warning d-flex align-items-start">
+            <div class="me-3">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+            </div>
+            <div>
+                <h5 class="alert-heading">No processed video available</h5>
+                <p class="mb-0">The video processing may have failed or is still in progress. You can try to reprocess the video using the button in the Actions panel.</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Detection Results Table -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="fas fa-car me-2 text-primary"></i>Detection Results</h5>
+            </div>
+            <div class="card-body p-4">
+                {% if detections %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag me-1"></i> Frame</th>
+                                <th><i class="fas fa-id-card me-1"></i> Vehicle ID</th>
+                                <th><i class="fas fa-tachometer-alt me-1"></i> Speed</th>
+                                <!-- <th><i class="fas fa-car-side me-1"></i> License Plate</th> -->
+                                <th><i class="fas fa-exclamation-circle me-1"></i> Status</th>
+                                <th><i class="fas fa-clock me-1"></i> Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detection in detections|slice:":50" %}
+                            <tr class="{% if detection.is_overspeed %}table-danger{% else %}table-success{% endif %}">
+                                <td>{{ detection.frame_number }}</td>
+                                <td>{{ detection.vehicle_id }}</td>
+                                <td>
+                                    <strong>{{ detection.speed|floatformat:1 }}</strong> km/h
+                                    {% if detection.is_overspeed %}
+                                        <span class="badge bg-danger ms-1">OVER</span>
+                                    {% endif %}
+                                </td>
+                                <!-- <td>
+                                    {% if detection.license_plate %}
+                                        <span class="badge bg-dark">{{ detection.license_plate }}</span>
+                                        {% if detection.license_plate_confidence %}
+                                            <small class="d-block text-muted mt-1">({{ detection.license_plate_confidence|floatformat:2 }} confidence)</small>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted"><i class="fas fa-times-circle me-1"></i>Not detected</span>
+                                    {% endif %}
+                                </td> -->
+                                <td>
+                                    {% if detection.is_overspeed %}
+                                        <span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Overspeed</span>
+                                    {% else %}
+                                        <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Normal</span>
+                                    {% endif %}
+                                </td>
+                                <td><i class="fas fa-calendar-alt me-1 text-muted"></i>{{ detection.timestamp|date:"M d, Y H:i:s" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if detections.count > 50 %}
+                        <div class="alert alert-light mt-3 d-flex align-items-center">
+                            <i class="fas fa-info-circle text-primary me-2"></i>
+                            <p class="mb-0">Showing first 50 results. <a href="{% url 'download_csv' video.id %}" class="fw-bold">Download CSV</a> for complete data.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5>No vehicle detections found</h5>
+                        <p class="text-muted">No vehicles were detected in this video.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Statistics Card -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2 text-primary"></i>Video Statistics</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="stats-card mb-4">
+                    <div class="stats-card-header text-center mb-3">
+                        <div class="stats-icon mb-2">
+                            <i class="fas fa-car-side fa-2x text-primary"></i>
+                        </div>
+                        <h3 class="text-primary mb-1">{{ total_vehicles }}</h3>
+                        <p class="text-muted mb-0">Total Vehicles Detected</p>
+                    </div>
+                    
+                    <div class="row g-2 g-md-3 text-center">
+                        <div class="col-6">
+                            <div class="p-2 p-md-3 rounded bg-danger bg-opacity-10">
+                                <div class="d-flex align-items-center justify-content-center mb-1 mb-md-2">
+                                    <i class="fas fa-exclamation-triangle text-danger me-1 me-md-2"></i>
+                                    <h4 class="text-danger mb-0 fs-5 fs-md-4">{{ overspeed_vehicles }}</h4>
+                                </div>
+                                <p class="mb-0 small">Overspeed</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 p-md-3 rounded bg-success bg-opacity-10">
+                                <div class="d-flex align-items-center justify-content-center mb-1 mb-md-2">
+                                    <i class="fas fa-check-circle text-success me-1 me-md-2"></i>
+                                    <h4 class="text-success mb-0 fs-5 fs-md-4">{{ total_vehicles|add:"-"|add:overspeed_vehicles }}</h4>
+                                </div>
+                                <p class="mb-0 small">Normal Speed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center p-3 rounded bg-info bg-opacity-10">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-tachometer-alt text-info me-2"></i>
+                        <h3 class="text-info mb-0">{{ avg_speed }} km/h</h3>
+                    </div>
+                    <p class="mb-0">Average Speed</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Video Info Card -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2 text-primary"></i>Video Information</h5>
+            </div>
+            <div class="card-body p-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-center px-0 py-3 border-top-0">
+                        <div class="me-3">
+                            <i class="fas fa-calendar-alt fa-lg text-primary"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Uploaded</small>
+                            <strong>{{ video.uploaded_at|date:"F d, Y H:i" }}</strong>
+                        </div>
+                    </li>
+                    
+                    <li class="list-group-item d-flex align-items-center px-0 py-3">
+                        <div class="me-3">
+                            <i class="fas fa-file-video fa-lg text-primary"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Original Size</small>
+                            <strong>{{ video.video_file.size|filesizeformat }}</strong>
+                        </div>
+                    </li>
+                    
+                    {% if video.processed_video %}
+                    <li class="list-group-item d-flex align-items-center px-0 py-3">
+                        <div class="me-3">
+                            <i class="fas fa-file-export fa-lg text-primary"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Processed Size</small>
+                            <strong>{{ video.processed_video.size|filesizeformat }}</strong>
+                        </div>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="list-group-item d-flex align-items-center px-0 py-3">
+                        <div class="me-3">
+                            <i class="fas fa-tasks fa-lg text-primary"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Status</small>
+                            {% if video.is_processed %}
+                                <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Processed</span>
+                            {% else %}
+                                <span class="badge bg-warning"><i class="fas fa-clock me-1"></i>Pending</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Actions Card -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0"><i class="fas fa-cogs me-2 text-primary"></i>Actions</h5>
+            </div>
+            <div class="card-body p-4 d-grid gap-3">
+                {% if video.processed_video %}
+                    <a href="{{ video.processed_video.url }}" class="btn btn-primary d-flex align-items-center justify-content-center" download>
+                        <i class="fas fa-download me-2"></i>Download Video
+                    </a>
+                {% endif %}
+                {% if video.csv_file %}
+                    <a href="{% url 'download_csv' video.id %}" class="btn btn-success d-flex align-items-center justify-content-center">
+                        <i class="fas fa-file-csv me-2"></i>Download CSV Report
+                    </a>
+                {% endif %}
+                {% if not video.is_processed %}
+                    <button class="btn btn-warning d-flex align-items-center justify-content-center" onclick="startProcessing({{ video.id }})">
+                        <i class="fas fa-sync-alt me-2"></i>Reprocess Video
+                    </button>
+                {% endif %}
+                <a href="{% url 'delete_video' video.id %}" class="btn btn-outline-danger d-flex align-items-center justify-content-center" 
+                   onclick="return confirm('Are you sure you want to delete this video? This action cannot be undone.')">
+                    <i class="fas fa-trash-alt me-2"></i>Delete Video
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.video-container {
+    position: relative;
+    width: 100%;
+    background-color: #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+</style>
+
+<script>
+// Enhanced video loading error handling with detailed debugging
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.querySelector('video');
+    if (video) {
+        // Add loading indicator
+        const videoContainer = video.closest('.video-container');
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50';
+        loadingIndicator.innerHTML = '<div class="spinner-border text-light" role="status"><span class="visually-hidden">Loading...</span></div>';
+        videoContainer.appendChild(loadingIndicator);
+        
+        // Debug info display function
+        function addDebugInfo() {
+            const debugInfo = document.createElement('div');
+            debugInfo.className = 'alert alert-info mt-3 small';
+            debugInfo.innerHTML = `
+                <div class="d-flex align-items-start">
+                    <div class="me-3">
+                        <i class="fas fa-info-circle fa-2x text-info"></i>
+                    </div>
+                    <div>
+                        <h5 class="alert-heading">Video Debug Information</h5>
+                        <p class="mb-0"><strong>Video Source:</strong> ${video.querySelector('source').src}</p>
+                        <p class="mb-0"><strong>Video Type:</strong> ${video.querySelector('source').type}</p>
+                        <p class="mb-0"><strong>Browser:</strong> ${navigator.userAgent}</p>
+                        <p class="mb-0"><strong>Preload Setting:</strong> ${video.preload}</p>
+                        <p class="mb-0"><strong>Crossorigin Setting:</strong> ${video.crossOrigin || 'none'}</p>
+                    </div>
+                </div>
+            `;
+            videoContainer.parentNode.insertBefore(debugInfo, videoContainer.nextSibling);
+        }
+        
+        // Enhanced error handling
+        video.addEventListener('error', function(e) {
+            console.error('Video error:', e);
+            loadingIndicator.remove();
+            
+            // Get detailed error information
+            let errorDetails = '';
+            let troubleshootingTips = [];
+            
+            if (video.error) {
+                switch (video.error.code) {
+                    case 1: 
+                        errorDetails = 'The fetching process failed (MEDIA_ERR_ABORTED).';
+                        troubleshootingTips = [
+                            'Check your internet connection',
+                            'Verify the file path is correct',
+                            'The server might be blocking the video request'
+                        ];
+                        break;
+                    case 2: 
+                        errorDetails = 'The video could not be decoded (MEDIA_ERR_NETWORK).';
+                        troubleshootingTips = [
+                            'Check if the video file exists on the server',
+                            'The server might be returning a 404 or other error',
+                            'Try downloading the video to verify it exists'
+                        ];
+                        break;
+                    case 3: 
+                        errorDetails = 'The video has been corrupted or is in an unsupported format (MEDIA_ERR_DECODE).';
+                        troubleshootingTips = [
+                            'The video file may be corrupted',
+                            'Try re-processing the video',
+                            'Check if the video codec is supported by your browser'
+                        ];
+                        break;
+                    case 4: 
+                        errorDetails = 'The video format is not supported by your browser (MEDIA_ERR_SRC_NOT_SUPPORTED).';
+                        troubleshootingTips = [
+                            'Try a different browser (Chrome, Firefox, Safari)',
+                            'The video might be using an unsupported codec',
+                            'Download the video and play it in a local media player'
+                        ];
+                        break;
+                    default: 
+                        errorDetails = 'Unknown error occurred.';
+                        troubleshootingTips = [
+                            'Try refreshing the page',
+                            'Clear your browser cache',
+                            'Download the video and play it locally'
+                        ];
+                }
+            }
+            
+            // Create troubleshooting tips HTML
+            let tipsHTML = '';
+            if (troubleshootingTips.length > 0) {
+                tipsHTML = '<ul class="mb-0 ps-3">';
+                troubleshootingTips.forEach(tip => {
+                    tipsHTML += `<li>${tip}</li>`;
+                });
+                tipsHTML += '</ul>';
+            }
+            
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'alert alert-danger mt-3 d-flex align-items-start';
+            errorMsg.innerHTML = `
+                <div class="me-3">
+                    <i class="fas fa-exclamation-circle fa-2x text-danger"></i>
+                </div>
+                <div>
+                    <h5 class="alert-heading">Video Error</h5>
+                    <p class="mb-0"><strong>Error:</strong> ${errorDetails}</p>
+                    <p class="mb-0"><strong>Source:</strong> ${video.querySelector('source').src}</p>
+                    <p class="mb-0 mt-2"><strong>Troubleshooting Tips:</strong></p>
+                    ${tipsHTML}
+                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="window.location.reload()">Refresh Page</button>
+                    <a href="${video.querySelector('source').src}" download class="btn btn-sm btn-outline-success mt-2 ms-2">Download Video</a>
+                </div>
+            `;
+            videoContainer.parentNode.insertBefore(errorMsg, videoContainer.nextSibling);
+            
+            // Add debug info after error
+            addDebugInfo();
+        });
+        
+        // Enhanced loading events
+        video.addEventListener('loadstart', function() {
+            console.log('Video loading started...');
+        });
+        
+        video.addEventListener('loadedmetadata', function() {
+            console.log('Video metadata loaded. Duration:', video.duration);
+        });
+        
+        video.addEventListener('canplay', function() {
+            console.log('Video can play. Dimensions:', video.videoWidth, 'x', video.videoHeight);
+            loadingIndicator.remove();
+        });
+        
+        // Add timeout to detect if video is taking too long to load
+        let loadTimeout = setTimeout(function() {
+            if (loadingIndicator.parentNode) {
+                const warningMsg = document.createElement('div');
+                warningMsg.className = 'alert alert-warning mt-3';
+                warningMsg.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Video Loading Slowly</h5>
+                            <p class="mb-0">The video is taking longer than expected to load. It may be a large file or there might be connection issues.</p>
+                            <button class="btn btn-sm btn-outline-primary mt-2" onclick="window.location.reload()">Refresh Page</button>
+                            <a href="${video.querySelector('source').src}" download class="btn btn-sm btn-outline-success mt-2 ms-2">Download Video</a>
+                        </div>
+                    </div>
+                `;
+                videoContainer.parentNode.insertBefore(warningMsg, videoContainer.nextSibling);
+                
+                // Add debug info after warning
+                addDebugInfo();
+            }
+        }, 10000); // Show warning after 10 seconds
+        
+        video.addEventListener('canplay', function() {
+            clearTimeout(loadTimeout);
+        });
+    }
+});
+
+// Function to check if video file exists
+function checkVideoFileExists(url) {
+    // Display the URL being checked
+    console.log('Checking video URL:', url);
+    
+    fetch(url, { method: 'HEAD' })
+        .then(response => {
+            if (!response.ok) {
+                console.error(`Video file check failed: ${response.status} ${response.statusText}`);
+                const debugInfo = document.createElement('div');
+                debugInfo.className = 'alert alert-danger mt-3';
+                debugInfo.innerHTML = `
+                    <div class="d-flex align-items-start">
+                        <div class="me-3">
+                            <i class="fas fa-exclamation-circle fa-2x text-danger"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Video File Not Found</h5>
+                            <p class="mb-0">The server returned status: ${response.status} ${response.statusText}</p>
+                            <p class="mb-0">URL: ${url}</p>
+                            <p class="mb-0 mt-2">The video file could not be found on the server. Please check if the file exists.</p>
+                        </div>
+                    </div>
+                `;
+                const videoContainer = document.querySelector('.video-container');
+                if (videoContainer) {
+                    videoContainer.parentNode.insertBefore(debugInfo, videoContainer.nextSibling);
+                }
+            } else {
+                console.log('Video file exists and is accessible');
+                // Add success message
+                const successInfo = document.createElement('div');
+                successInfo.className = 'alert alert-success mt-3';
+                successInfo.innerHTML = `
+                    <div class="d-flex align-items-start">
+                        <div class="me-3">
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-heading">Video File Found</h5>
+                            <p class="mb-0">The video file was successfully located.</p>
+                            <p class="mb-0">URL: ${url}</p>
+                        </div>
+                    </div>
+                `;
+                const videoContainer = document.querySelector('.video-container');
+                if (videoContainer) {
+                    videoContainer.parentNode.insertBefore(successInfo, videoContainer.nextSibling);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error checking video file:', error);
+            const errorInfo = document.createElement('div');
+            errorInfo.className = 'alert alert-danger mt-3';
+            errorInfo.innerHTML = `
+                <div class="d-flex align-items-start">
+                    <div class="me-3">
+                        <i class="fas fa-exclamation-circle fa-2x text-danger"></i>
+                    </div>
+                    <div>
+                        <h5 class="alert-heading">Error Checking Video</h5>
+                        <p class="mb-0">An error occurred while checking the video file: ${error.message}</p>
+                        <p class="mb-0">URL attempted: ${url}</p>
+                    </div>
+                </div>
+            `;
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.parentNode.insertBefore(errorInfo, videoContainer.nextSibling);
+            }
+        });
+}
+
+// Check if video file exists when page loads
+if (video) {
+    const videoUrl = video.querySelector('source').src;
+    checkVideoFileExists(videoUrl);
+    
+    // Add direct iframe test to check if video can be embedded
+    const testFrame = document.createElement('div');
+    testFrame.className = 'mt-3';
+    testFrame.innerHTML = `
+        <div class="alert alert-info">
+            <h6>Video Accessibility Test</h6>
+            <iframe src="${videoUrl}" width="1" height="1" style="border:0;"></iframe>
+            <div id="iframe-test-result">Testing...</div>
+        </div>
+    `;
+    
+    const videoContainer = document.querySelector('.video-container');
+    if (videoContainer) {
+        videoContainer.parentNode.insertBefore(testFrame, videoContainer.nextSibling);
+        
+        // Check if iframe loaded successfully
+        setTimeout(() => {
+            const iframe = testFrame.querySelector('iframe');
+            const resultDiv = testFrame.querySelector('#iframe-test-result');
+            
+            try {
+                if (iframe.contentDocument) {
+                    resultDiv.textContent = 'Video file is accessible via iframe';
+                    resultDiv.style.color = 'green';
+                } else {
+                    resultDiv.textContent = 'Video file is not accessible via iframe';
+                    resultDiv.style.color = 'red';
+                    document.getElementById('fallback-player').classList.remove('d-none');
+                }
+            } catch (e) {
+                resultDiv.textContent = 'Cross-origin error: ' + e.message;
+                resultDiv.style.color = 'red';
+                document.getElementById('fallback-player').classList.remove('d-none');
+            }
+        }, 2000);
+    }
+    
+    // Show fallback player if main video fails to load
+    video.addEventListener('error', function() {
+        document.getElementById('fallback-player').classList.remove('d-none');
+    });
+}
+
+
+// Progress modal functions for reprocessing
+function startProcessing(videoId) {
+    // Show confirmation before proceeding
+    if (confirm('Are you sure you want to reprocess this video? This may take several minutes.')) {
+        // Redirect to processing page
+        window.location.href = '/process-with-progress/' + videoId + '/';
+    }
+}
+</script>
+</div>
+{% endblock %}

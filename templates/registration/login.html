@@ -1,0 +1,362 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - LaneVision{% endblock %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block content %}
+<div style="
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    min-height: 100vh;
+    padding: 2rem 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+">
+    <div style="max-width: 700px; width: 100%; padding: 0 1rem;">
+        <div style="
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        ">
+            <!-- Header -->
+            <div style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 3rem 2rem;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            ">
+                <div style="
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                    animation: rotate 8s linear infinite;
+                "></div>
+                
+                <div style="
+                    background: rgba(255, 255, 255, 0.2);
+                    width: 80px;
+                    height: 80px;
+                    border-radius: 50%;
+                    margin: 0 auto 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+                    z-index: 2;
+                ">
+                    <i class="fas fa-tachometer-alt" style="font-size: 2rem; color: white;"></i>
+                </div>
+                
+                <h2 style="
+                    color: white;
+                    font-weight: 700;
+                    font-size: 2rem;
+                    margin: 0 0 0.5rem 0;
+                    position: relative;
+                    z-index: 2;
+                ">Welcome Back</h2>
+                
+                <p style="
+                    color: rgba(255, 255, 255, 0.9);
+                    font-size: 1.1rem;
+                    margin: 0;
+                    font-weight: 300;
+                    position: relative;
+                    z-index: 2;
+                ">Sign in to your Vehicle Speed Detection account</p>
+            </div>
+            
+            <!-- Form Body -->
+            <div style="padding: 3rem 2.5rem;">
+                <!-- Error Messages -->
+                {% if form.errors %}
+                    <div style="
+                        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+                        border: 1px solid #fca5a5;
+                        border-radius: 12px;
+                        padding: 1rem 1.5rem;
+                        margin-bottom: 1.5rem;
+                        color: #dc2626;
+                    ">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem; font-size: 1.1rem;"></i>
+                            <strong>Login Failed</strong>
+                        </div>
+                        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+                            Please check your username and password and try again.
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Username Field -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="{{ form.username.id_for_label }}" style="
+                            display: block;
+                            font-weight: 600;
+                            color: #2d3748;
+                            margin-bottom: 0.5rem;
+                            font-size: 0.95rem;
+                        ">Username</label>
+                        
+                        <div style="position: relative;">
+                            <i class="fas fa-user" style="
+                                position: absolute;
+                                left: 1rem;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                color: #a0aec0;
+                                font-size: 1rem;
+                                z-index: 2;
+                                transition: color 0.3s ease;
+                            "></i>
+                            
+                            <input type="text" 
+                                   id="{{ form.username.id_for_label }}" 
+                                   name="username" 
+                                   value="{{ form.username.value|default:'' }}"
+                                   placeholder="Enter your username"
+                                   required
+                                   style="
+                                       width: 100%;
+                                       background: #f8fafc;
+                                       border: 2px solid #e2e8f0;
+                                       border-radius: 16px;
+                                       padding: 1.2rem 1rem 1.2rem 3rem;
+                                       font-size: 1rem;
+                                       transition: all 0.3s ease;
+                                       outline: none;
+                                       box-sizing: border-box;
+                                   "
+                                   onfocus="this.style.background='white'; this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 4px rgba(102, 126, 234, 0.1)'; this.style.transform='translateY(-2px)';"
+                                   onblur="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+                        </div>
+                        
+                        <div style="
+                            font-size: 0.85rem;
+                            color: #718096;
+                            margin-top: 0.5rem;
+                        ">Enter your registered username</div>
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <label for="{{ form.password.id_for_label }}" style="
+                            display: block;
+                            font-weight: 600;
+                            color: #2d3748;
+                            margin-bottom: 0.5rem;
+                            font-size: 0.95rem;
+                        ">Password</label>
+                        
+                        <div style="position: relative;">
+                            <i class="fas fa-lock" style="
+                                position: absolute;
+                                left: 1rem;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                color: #a0aec0;
+                                font-size: 1rem;
+                                z-index: 2;
+                                transition: color 0.3s ease;
+                            "></i>
+                            
+                            <input type="password" 
+                                   id="{{ form.password.id_for_label }}" 
+                                   name="password"
+                                   placeholder="Enter your password"
+                                   required
+                                   style="
+                                       width: 100%;
+                                       background: #f8fafc;
+                                       border: 2px solid #e2e8f0;
+                                       border-radius: 16px;
+                                       padding: 1.2rem 1rem 1.2rem 3rem;
+                                       font-size: 1rem;
+                                       transition: all 0.3s ease;
+                                       outline: none;
+                                       box-sizing: border-box;
+                                   "
+                                   onfocus="this.style.background='white'; this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 4px rgba(102, 126, 234, 0.1)'; this.style.transform='translateY(-2px)';"
+                                   onblur="this.style.background='#f8fafc'; this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+                        </div>
+                        
+                        <div style="
+                            font-size: 0.85rem;
+                            color: #718096;
+                            margin-top: 0.5rem;
+                        ">Enter your account password</div>
+                    </div>
+                    
+                    <!-- Remember Me and Forgot Password -->
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-bottom: 2rem;
+                    ">
+                        <label style="
+                            display: flex;
+                            align-items: center;
+                            color: #4a5568;
+                            font-size: 0.9rem;
+                            cursor: pointer;
+                        ">
+                            <input type="checkbox" name="remember_me" style="
+                                margin-right: 0.5rem;
+                                accent-color: #667eea;
+                                transform: scale(1.1);
+                            ">
+                            Remember me
+                        </label>
+                        
+                        <a href="{% url 'password_reset' %}" style="
+                            color: #667eea;
+                            font-size: 0.9rem;
+                            text-decoration: none;
+                            font-weight: 500;
+                            transition: color 0.3s ease;
+                        " onmouseover="this.style.color='#764ba2';" onmouseout="this.style.color='#667eea';">
+                            <i class="fas fa-key" style="margin-right: 0.3rem; font-size: 0.8rem;"></i>
+                            Forgot password?
+                        </a>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" style="
+                        width: 100%;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        border: none;
+                        border-radius: 16px;
+                        padding: 1.2rem 2rem;
+                        font-weight: 700;
+                        font-size: 1.1rem;
+                        color: white;
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                        position: relative;
+                        overflow: hidden;
+                        margin-bottom: 1.5rem;
+                    " 
+                    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(102, 126, 234, 0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(102, 126, 234, 0.3)';"
+                    onmousedown="this.style.transform='translateY(-1px)';"
+                    onmouseup="this.style.transform='translateY(-3px)';">
+                        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                        Sign In
+                    </button>
+                </form>
+                
+                <!-- Signup Link -->
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <p style="margin: 0; color: #4a5568; font-size: 1rem;">
+                        Don't have an account? 
+                        <a href="{% url 'signup' %}" style="
+                            color: #667eea;
+                            font-weight: 600;
+                            text-decoration: none;
+                            transition: color 0.3s ease;
+                        " onmouseover="this.style.color='#764ba2';" onmouseout="this.style.color='#667eea';">
+                            Sign up here
+                        </a>
+                    </p>
+                </div>
+                
+                <!-- Security Note -->
+                <div style="
+                    background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+                    border: 1px solid #bbf7d0;
+                    border-radius: 12px;
+                    padding: 1rem 1.5rem;
+                    text-align: center;
+                    margin-top: 1.5rem;
+                ">
+                    <div style="
+                        color: #065f46;
+                        font-size: 0.85rem;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5rem;
+                    ">
+                        <i class="fas fa-shield-alt" style="color: #10b981;"></i>
+                        <span>Secure login protected by industry-standard encryption</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Features -->
+        <div style="
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        ">
+            <div style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 2rem;
+                font-size: 0.9rem;
+            ">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-clock"></i>
+                    <span>24/7 Access</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>Mobile Friendly</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-headset"></i>
+                    <span>Support Available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add CSS animations -->
+<style>
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 576px) {
+        .auth-page > div {
+            padding: 0 0.5rem !important;
+        }
+        
+        .auth-page .additional-features > div {
+            flex-direction: column !important;
+            gap: 1rem !important;
+        }
+    }
+</style>
+{% endblock %}
