@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Vehicle Speed Detection System
 
 ![Vehicle Speed Detection](https://imagevision.ai/wp-content/uploads/2024/01/Overspeeding-Detection-Section-01.jpg)
@@ -229,3 +230,6 @@ The system can be configured by modifying the following parameters in `video_pro
 - [EasyOCR](https://github.com/JaidedAI/EasyOCR) for license plate recognition
 - [OpenCV](https://opencv.org/) for computer vision capabilities
 - [Django](https://www.djangoproject.com/) for the web framework
+=======
+# LaneVision
+>>>>>>> 9365508f567f15301e1ff8b8f20691ba93e9b5d4
