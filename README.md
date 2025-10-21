@@ -3,13 +3,13 @@
 
 ![Vehicle Speed Detection](https://imagevision.ai/wp-content/uploads/2024/01/Overspeeding-Detection-Section-01.jpg)
 
-An advanced AI-powered system for detecting vehicle speeds and license plates in traffic videos with high accuracy. This web application uses computer vision and deep learning to analyze traffic footage, identify vehicles, track their movement, calculate speeds, and detect license plates.
+An advanced AI-powered system for detecting vehicle speeds and tracking vehicles in traffic videos with high accuracy. This web application uses computer vision and deep learning to analyze traffic footage, identify vehicles, track their movement, and calculate speeds.
 
 ## Features
 
 - **Vehicle Detection & Tracking**: Identifies and tracks vehicles across video frames using YOLOv8
 - **Speed Calculation**: Accurately measures vehicle speeds in km/h
-- **License Plate Recognition**: Detects and reads license plates using OCR technology
+- **Vehicle Classification**: Classifies vehicles by type (car, motorcycle, bus, truck)
 - **Overspeed Detection**: Flags vehicles exceeding the speed limit (currently set to 80 km/h)
 - **Video Processing**: Processes uploaded videos with visual indicators for detected vehicles
 - **Data Export**: Generates CSV reports with detailed detection information
@@ -22,7 +22,7 @@ An advanced AI-powered system for detecting vehicle speeds and license plates in
 
 - **Backend**: Django 5.0
 - **Computer Vision**: OpenCV, YOLOv8 (Ultralytics)
-- **OCR**: EasyOCR for license plate recognition
+- **Object Tracking**: SORT algorithm for multi-object tracking
 - **Data Processing**: NumPy, Pandas
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap 5
 - **Authentication**: Django Authentication System with OTP verification
@@ -135,7 +135,7 @@ An advanced AI-powered system for detecting vehicle speeds and license plates in
 2. Click on "Upload Video" in the navigation or dashboard
 3. Fill in the video title and upload your traffic video file
 4. Wait for the processing to complete (progress will be displayed)
-5. View the processed video with speed and license plate detections
+5. View the processed video with speed and vehicle tracking
 
 ### Viewing Results
 
@@ -149,7 +149,7 @@ An advanced AI-powered system for detecting vehicle speeds and license plates in
 ### Components
 
 - **Video Processing Engine**: Handles vehicle detection, tracking, and speed calculation
-- **License Plate Recognition Module**: Extracts and reads license plate text
+- **Vehicle Classification Module**: Classifies vehicles by type and tracks them
 - **Web Interface**: Provides user interaction and result visualization
 - **Database**: Stores user data, video metadata, and detection results
 
@@ -159,7 +159,7 @@ An advanced AI-powered system for detecting vehicle speeds and license plates in
 2. Frame-by-frame processing with YOLOv8 for vehicle detection
 3. Vehicle tracking across frames
 4. Speed calculation based on pixel displacement and calibration
-5. License plate detection and OCR
+5. Vehicle classification and tracking
 6. Results storage and visualization
 
 ## Configuration
@@ -227,7 +227,7 @@ The system can be configured by modifying the following parameters in `video_pro
 ## Acknowledgements
 
 - [Ultralytics](https://github.com/ultralytics/ultralytics) for YOLOv8
-- [EasyOCR](https://github.com/JaidedAI/EasyOCR) for license plate recognition
+- [SORT](https://github.com/abewley/sort) for multi-object tracking
 - [OpenCV](https://opencv.org/) for computer vision capabilities
 - [Django](https://www.djangoproject.com/) for the web framework
 =======

@@ -61,7 +61,7 @@ class VehicleSpeedDetector:
         
         self.vehicle_classes = [2, 3, 5, 7]  # car, motorcycle, bus, truck
         # Overspeed threshold for display/CSV
-        self.speed_limit = 100  # km/h
+        self.speed_limit = 90  # km/h
         
         # Class names mapping for COCO dataset (used by YOLOv8)
         self.class_names = {
