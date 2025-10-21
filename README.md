@@ -134,20 +134,7 @@ python manage.py runserver
 ## 📖 Documentation
 
 ### 🏗️ System Architecture
-
-```mermaid
-graph TB
-    A[Video Upload] --> B[Django Backend]
-    B --> C[YOLOv8 Detection]
-    C --> D[SORT Tracking]
-    D --> E[Speed Calculation]
-    E --> F[Data Export]
-    F --> G[User Dashboard]
-    
-    H[Authentication] --> B
-    I[Database] --> B
-    J[Static Files] --> B
-```
+![system architecture](project_ss_send/sys.png)
 
 ### 🔧 Configuration
 
