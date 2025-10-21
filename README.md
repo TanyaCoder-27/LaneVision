@@ -38,6 +38,22 @@ LaneVision is a cutting-edge vehicle speed detection system that leverages state
 <div align="center">
 
 ![Homepage before Sign-in](project_ss_send/homepage_before.png)
+![Authentication](project_ss_send/2.png)
+![Homepage after Sign-in](project_ss_send/homepage_after.png)
+![Dashboard](project_ss_send/4.png)
+![Video Upload](project_ss_send/5.png)
+![Before process video](project_ss_send/7.png)
+![Processing](project_ss_send/9.png)
+![output1_1](project_ss_send/11.png)
+![output1_2](project_ss_send/12.png)
+![output1_3](project_ss_send/13.png)
+![output1_4](project_ss_send/14.png)
+![output2_1](project_ss_send/16.png)
+![output2_2](project_ss_send/17.png)
+![output2_3](project_ss_send/18.png)
+![output2_4](project_ss_send/overspeed.png)
+![output2_5](project_ss_send/19.png)
+
 
 *Experience LaneVision in action - Upload a traffic video and watch the AI analyze vehicle speeds in real-time!*
 
