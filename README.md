@@ -134,7 +134,7 @@ python manage.py runserver
 ## 📖 Documentation
 
 ### 🏗️ System Architecture
-![system architecture](project_ss_send/sys.png)
+![system architecture](project_ss_send/sys.jpeg)
 
 ### 🔧 Configuration
 
