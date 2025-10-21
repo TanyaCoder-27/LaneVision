@@ -33,11 +33,11 @@ LaneVision is a cutting-edge vehicle speed detection system that leverages state
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Project Demo
 
 <div align="center">
 
-![LaneVision Demo](https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80)
+![Homepage before Sign-in](project_ss_send/homepage_before.png)
 
 *Experience LaneVision in action - Upload a traffic video and watch the AI analyze vehicle speeds in real-time!*
 
